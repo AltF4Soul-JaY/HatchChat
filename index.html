@@ -1,52 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HatchChat 💬</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="styles/style.css">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icons/favicon-192.png" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="styles/theme.css" />
+  <link rel="stylesheet" href="styles/style.css" />
 </head>
-<body class="text-white font-sans backdrop-blur-xl">
-
-  <header class="flex justify-between items-center p-4 bg-black bg-opacity-50 shadow-xl">
-    <img src="assets/images/HatchChat/HatchChatLogo.jpg" alt="HatchChat Logo" class="h-12 rounded-lg">
-    <h1 class="text-2xl font-bold text-cyan-300 animate-pulse">HatchChat</h1>
+<body>
+  <!-- Header -->
+  <header role="banner">
+    <a href="/" aria-label="Home">
+      <img src="assets/images/HatchChatLogo.jpg" alt="HatchChat Logo" />
+    </a>
+    <h1>HatchChat</h1>
   </header>
 
-  <main class="max-w-5xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-4 gap-6 px-4 md:px-0">
-    <aside class="col-span-1 bg-black bg-opacity-60 p-4 rounded-xl shadow-lg fade-in">
-      <h2 class="text-xl font-semibold text-cyan-400 mb-2">Profile</h2>
-      <input type="text" id="editUsername" placeholder="Your username" class="w-full p-2 rounded bg-gray-800 border border-gray-600 mb-2">
-      <button id="saveUsernameBtn" class="w-full bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Save Name</button>
-    </aside>
+  <!-- Main Container -->
+  <div class="app-container flex h-[calc(100vh-4rem)]">
+    <!-- Sidebar Nav -->
+    <nav class="w-1/4 bg-panel p-4 space-y-4">
+      <button class="nav-btn w-full py-2 text-left" data-section="chats">💬 Chats</button>
+      <button class="nav-btn w-full py-2 text-left" data-section="announcements">📢 Announcements</button>
+      <button class="nav-btn w-full py-2 text-left" data-section="profile">👤 Profile</button>
+      <button class="nav-btn w-full py-2 text-left" data-section="dm">✉️ Direct Messages <small>(Dev)</small></button>
+    </nav>
 
-    <section class="md:col-span-3 space-y-6">
-      <div id="entry-section" class="space-y-4 bg-black bg-opacity-60 p-6 rounded-xl text-center shadow-xl fade-in">
-        <button id="enterChatBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded text-lg transition-all duration-300 ease-in-out transform hover:scale-105">Enter Chat</button>
-      </div>
-
-      <div id="chat-section" class="hidden space-y-4 bg-black bg-opacity-60 p-6 rounded-xl shadow-lg fade-in">
-        <p id="welcomeText" class="text-cyan-300 font-semibold text-lg"></p>
-        <div id="chat-box" class="h-64 md:h-96 overflow-y-scroll bg-gray-900 p-4 rounded space-y-2"></div>
-        <div class="flex gap-2">
-          <input type="text" id="messageInput" placeholder="Type your message..." class="flex-1 p-2 rounded bg-gray-800 border border-gray-600">
-          <button id="sendBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded flex items-center gap-1">
-            <span>Send</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l11 2-11 2 4-4z"/>
-            </svg>
-          </button>
+    <!-- Sections -->
+    <div class="flex-1 relative">
+      <!-- Chats Section -->
+      <section id="chats" class="section active">
+        <div id="chat-section" class="flex h-full">
+          <aside class="sidebar" aria-labelledby="profile-heading">
+            <h2 id="profile-heading">Your Profile</h2>
+            <input type="text" id="editUsername" placeholder="Enter your username" autocomplete="username" />
+            <button id="saveUsernameBtn">Save Name</button>
+          </aside>
+          <div class="chat-panel flex-1 flex flex-col">
+            <p id="welcomeText" aria-live="polite"></p>
+            <div id="chat-box" class="flex-1 overflow-y-auto" tabindex="0" role="log" aria-live="off"></div>
+            <form class="message-input-group" onsubmit="return false;">
+              <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off" required />
+              <button id="sendBtn">Send</button>
+            </form>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+      <!-- Announcements Section -->
+<section id="announcements" class="section hidden p-4 overflow-y-auto">
+  <h2 class="text-lg font-semibold mb-4">📢 Announcements</h2>
 
-  <!-- Main App Logic -->
-  <script src="scripts/main.js"></script>
+  <!-- Add Announcement Button -->
+  <button id="addAnnouncementBtn" class="mb-4 px-4 py-2 bg-primary text-white rounded">➕ Add Announcement</button>
+
+  <!-- Announcement List -->
+  <div id="announcement-list" class="announcement-list space-y-4 mb-6">
+    <!-- Dynamic announcements will be injected here -->
+  </div>
+
+  <!-- New Announcement Form -->
+  <div id="new-announcement" class="announcement-form bg-panel p-4 rounded-lg shadow-md">
+    <textarea id="announcementText" placeholder="Write announcement..." class="w-full p-2 rounded mb-3 bg-[#1e293b] text-white"></textarea>
+    <div class="flex gap-3">
+      <button id="postAnnouncementBtn" class="bg-primary px-4 py-2 text-white rounded">Post</button>
+      <button id="pinToggleBtn" class="bg-pink-500 px-4 py-2 text-white rounded" title="Admins only">📌 Pin</button>
+    </div>
+  </div>
+</section>
+
+
+      <!-- Profile Section -->
+      <section id="profile" class="section hidden p-4 overflow-y-auto">
+        <h2 class="text-lg font-semibold mb-4">👤 Your Profile</h2>
+        <label for="profileUsername" class="block mb-1">Username</label>
+        <input type="text" id="profileUsername" class="w-full p-2 mb-4 bg-panel" />
+        <label for="profileStatus" class="block mb-1">Status</label>
+        <input type="text" id="profileStatus" class="w-full p-2 mb-4 bg-panel" placeholder="e.g. Available" />
+        <button id="saveProfileBtn" class="px-4 py-2 bg-primary text-white">Save Profile</button>
+      </section>
+
+      <!-- Direct Messages -->
+      <section id="dm" class="section hidden p-4">
+        <h2 class="text-lg font-semibold mb-4">✉️ Direct Messages</h2>
+        <p>Feature under development… stay tuned!</p>
+      </section>
+    </div>
+  </div>
+
+  <!-- Main Script -->
+  <script src="scripts/script.js" type="module" defer></script>
 </body>
 </html>

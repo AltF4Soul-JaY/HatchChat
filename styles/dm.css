@@ -1,0 +1,28 @@
+@import url('./theme.css');:root {
+  --color-bg: #0f172a;
+  --color-text: #e2e8f0;
+  --color-placeholder: #64748b;
+  --font: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 2rem;
+  color: var(--color-text);
+}
+
+p {
+  margin-top: 1rem;
+  color: var(--color-placeholder);
+}
