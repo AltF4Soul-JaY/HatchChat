@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HatchChat 💬</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body class="text-white font-sans backdrop-blur-xl">
+
+  <header class="flex justify-between items-center p-4 bg-black bg-opacity-50 shadow-xl">
+    <img src="assets/images/HatchChat/HatchChatLogo.jpg" alt="HatchChat Logo" class="h-12 rounded-lg">
+    <h1 class="text-2xl font-bold text-cyan-300 animate-pulse">HatchChat</h1>
+  </header>
+
+  <main class="max-w-5xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-4 gap-6 px-4 md:px-0">
+    <aside class="col-span-1 bg-black bg-opacity-60 p-4 rounded-xl shadow-lg fade-in">
+      <h2 class="text-xl font-semibold text-cyan-400 mb-2">Profile</h2>
+      <input type="text" id="editUsername" placeholder="Your username" class="w-full p-2 rounded bg-gray-800 border border-gray-600 mb-2">
+      <button id="saveUsernameBtn" class="w-full bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Save Name</button>
+    </aside>
+
+    <section class="md:col-span-3 space-y-6">
+      <div id="entry-section" class="space-y-4 bg-black bg-opacity-60 p-6 rounded-xl text-center shadow-xl fade-in">
+        <button id="enterChatBtn" class="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded text-lg transition-all duration-300 ease-in-out transform hover:scale-105">Enter Chat</button>
+      </div>
+
+      <div id="chat-section" class="hidden space-y-4 bg-black bg-opacity-60 p-6 rounded-xl shadow-lg fade-in">
+        <p id="welcomeText" class="text-cyan-300 font-semibold text-lg"></p>
+        <div id="chat-box" class="h-64 md:h-96 overflow-y-scroll bg-gray-900 p-4 rounded space-y-2"></div>
+        <div class="flex gap-2">
+          <input type="text" id="messageInput" placeholder="Type your message..." class="flex-1 p-2 rounded bg-gray-800 border border-gray-600">
+          <button id="sendBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded flex items-center gap-1">
+            <span>Send</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l11 2-11 2 4-4z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+  <!-- Main App Logic -->
+  <script src="scripts/main.js"></script>
+</body>
+</html>
