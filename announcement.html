@@ -14,25 +14,24 @@
     <h1>📢 Announcements</h1>
   </header>
 
+  <!-- Add Announcement Button -->
+  <button id="addAnnouncementBtn">➕ Add Announcement</button>
+
   <!-- Main Content -->
   <main>
-    <!-- Add Announcement Button -->
-    <button id="addAnnouncementBtn">➕ Add Announcement</button>
-
     <!-- Announcement List -->
     <section id="announcement-list" class="announcement-list">
       <!-- Dynamic announcements will be injected here -->
     </section>
 
     <!-- New Announcement Form -->
-    <form id="new-announcement" class="announcement-form" onsubmit="return false;">
-      <label for="announcementText" style="display: none;">New Announcement</label>
-      <textarea id="announcementText" placeholder="Write announcement..." required minlength="10"></textarea>
+    <section id="new-announcement" class="announcement-form">
+      <textarea id="announcementText" placeholder="Write announcement..."></textarea>
       <div class="btn-group">
-        <button type="submit" id="postAnnouncementBtn">Post</button>
-        <button type="button" id="pinToggleBtn" title="Admins only">📌 Pin</button>
+        <button id="postAnnouncementBtn">Post</button>
+        <button id="pinToggleBtn" title="Admins only">📌 Pin</button>
       </div>
-    </form>
+    </section>
   </main>
 </body>
 </html>
