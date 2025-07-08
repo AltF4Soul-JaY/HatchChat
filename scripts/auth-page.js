@@ -1,4 +1,4 @@
-// auth-page.js - Authentication page logic
+// Authentication page logic
 import { signUp, signIn } from './auth.js';
 
 // DOM elements
@@ -41,17 +41,24 @@ signinForm.addEventListener('submit', async (e) => {
     return;
   }
   
+  if (!isValidEmail(email)) {
+    showError('Please enter a valid email address');
+    return;
+  }
+  
   showLoading(true);
   hideError();
   
+  console.log('🔄 Attempting sign in...');
   const result = await signIn(email, password);
   
   showLoading(false);
   
   if (result.success) {
-    // Redirect to main app
+    console.log('✅ Sign in successful, redirecting...');
     window.location.href = '/';
   } else {
+    console.error('❌ Sign in failed:', result.error);
     showError(result.error);
   }
 });
@@ -75,6 +82,11 @@ signupForm.addEventListener('submit', async (e) => {
     return;
   }
   
+  if (!isValidEmail(email)) {
+    showError('Please enter a valid email address');
+    return;
+  }
+  
   if (password.length < 6) {
     showError('Password must be at least 6 characters');
     return;
@@ -88,14 +100,16 @@ signupForm.addEventListener('submit', async (e) => {
   showLoading(true);
   hideError();
   
+  console.log('🔄 Attempting sign up...');
   const result = await signUp(email, password, username);
   
   showLoading(false);
   
   if (result.success) {
-    // Redirect to main app
+    console.log('✅ Sign up successful, redirecting...');
     window.location.href = '/';
   } else {
+    console.error('❌ Sign up failed:', result.error);
     showError(result.error);
   }
 });
@@ -125,12 +139,21 @@ function hideError() {
   authError.classList.add('hidden');
 }
 
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 // Check if user is already signed in
 import { initAuth } from './auth.js';
 
 initAuth().then(user => {
   if (user) {
-    // User is already signed in, redirect to main app
+    console.log('✅ User already signed in, redirecting...');
     window.location.href = '/';
+  } else {
+    console.log('❌ User not signed in, showing auth page');
   }
 });
+
+console.log('✅ Auth page initialized');

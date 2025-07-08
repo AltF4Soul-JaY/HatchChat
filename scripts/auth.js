@@ -1,4 +1,4 @@
-// auth.js - Firebase Authentication Management
+// Firebase Authentication Management
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js';
 import { 
   getAuth, 
@@ -8,7 +8,13 @@ import {
   onAuthStateChanged,
   updateProfile
 } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js';
-import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js';
+import { 
+  getDatabase, 
+  ref, 
+  set, 
+  get,
+  serverTimestamp 
+} from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js';
 import { firebaseConfig } from './firebase-config.js';
 
 // Initialize Firebase
@@ -25,13 +31,11 @@ export function initAuth() {
     onAuthStateChanged(auth, (user) => {
       currentUser = user;
       if (user) {
-        // User is signed in
-        console.log('User signed in:', user.uid);
+        console.log('✅ User authenticated:', user.uid);
         updateUserPresence(user);
         resolve(user);
       } else {
-        // User is signed out
-        console.log('User signed out');
+        console.log('❌ User not authenticated');
         resolve(null);
       }
     });
@@ -41,6 +45,7 @@ export function initAuth() {
 // Sign up new user
 export async function signUp(email, password, username) {
   try {
+    console.log('🔄 Creating user account...');
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
@@ -53,8 +58,8 @@ export async function signUp(email, password, username) {
       email: user.email,
       username: username,
       displayName: username,
-      createdAt: Date.now(),
-      lastSeen: Date.now(),
+      createdAt: serverTimestamp(),
+      lastSeen: serverTimestamp(),
       status: 'online',
       projects: {
         'hatch-chat': true,
@@ -62,26 +67,29 @@ export async function signUp(email, password, username) {
       }
     });
     
+    console.log('✅ User account created successfully');
     return { success: true, user };
   } catch (error) {
-    console.error('Sign up error:', error);
-    return { success: false, error: error.message };
+    console.error('❌ Sign up error:', error);
+    return { success: false, error: getErrorMessage(error.code) };
   }
 }
 
 // Sign in existing user
 export async function signIn(email, password) {
   try {
+    console.log('🔄 Signing in user...');
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
     // Update last seen
     await updateUserPresence(user);
     
+    console.log('✅ User signed in successfully');
     return { success: true, user };
   } catch (error) {
-    console.error('Sign in error:', error);
-    return { success: false, error: error.message };
+    console.error('❌ Sign in error:', error);
+    return { success: false, error: getErrorMessage(error.code) };
   }
 }
 
@@ -91,12 +99,13 @@ export async function signOutUser() {
     if (currentUser) {
       // Update status to offline
       await set(ref(db, `hatch-quiz/users/${currentUser.uid}/status`), 'offline');
-      await set(ref(db, `hatch-quiz/users/${currentUser.uid}/lastSeen`), Date.now());
+      await set(ref(db, `hatch-quiz/users/${currentUser.uid}/lastSeen`), serverTimestamp());
     }
     await signOut(auth);
+    console.log('✅ User signed out');
     return { success: true };
   } catch (error) {
-    console.error('Sign out error:', error);
+    console.error('❌ Sign out error:', error);
     return { success: false, error: error.message };
   }
 }
@@ -105,28 +114,32 @@ export async function signOutUser() {
 async function updateUserPresence(user) {
   if (!user) return;
   
-  const userRef = ref(db, `hatch-quiz/users/${user.uid}`);
-  const snapshot = await get(userRef);
-  
-  if (snapshot.exists()) {
-    // Update existing user
-    await set(ref(db, `hatch-quiz/users/${user.uid}/status`), 'online');
-    await set(ref(db, `hatch-quiz/users/${user.uid}/lastSeen`), Date.now());
-  } else {
-    // Create new user record
-    await set(userRef, {
-      uid: user.uid,
-      email: user.email,
-      username: user.displayName || user.email.split('@')[0],
-      displayName: user.displayName || user.email.split('@')[0],
-      createdAt: Date.now(),
-      lastSeen: Date.now(),
-      status: 'online',
-      projects: {
-        'hatch-chat': true,
-        'hatch-quiz': true
-      }
-    });
+  try {
+    const userRef = ref(db, `hatch-quiz/users/${user.uid}`);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      // Update existing user
+      await set(ref(db, `hatch-quiz/users/${user.uid}/status`), 'online');
+      await set(ref(db, `hatch-quiz/users/${user.uid}/lastSeen`), serverTimestamp());
+    } else {
+      // Create new user record
+      await set(userRef, {
+        uid: user.uid,
+        email: user.email,
+        username: user.displayName || user.email.split('@')[0],
+        displayName: user.displayName || user.email.split('@')[0],
+        createdAt: serverTimestamp(),
+        lastSeen: serverTimestamp(),
+        status: 'online',
+        projects: {
+          'hatch-chat': true,
+          'hatch-quiz': true
+        }
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error updating user presence:', error);
   }
 }
 
@@ -137,8 +150,13 @@ export function getCurrentUser() {
 
 // Get user data from database
 export async function getUserData(uid) {
-  const snapshot = await get(ref(db, `hatch-quiz/users/${uid}`));
-  return snapshot.exists() ? snapshot.val() : null;
+  try {
+    const snapshot = await get(ref(db, `hatch-quiz/users/${uid}`));
+    return snapshot.exists() ? snapshot.val() : null;
+  } catch (error) {
+    console.error('❌ Error getting user data:', error);
+    return null;
+  }
 }
 
 // Update user profile
@@ -151,16 +169,40 @@ export async function updateUserProfile(updates) {
       await updateProfile(currentUser, { displayName: updates.displayName });
     }
     
+    // Get current user data
+    const currentData = await getUserData(currentUser.uid);
+    
     // Update database
     await set(ref(db, `hatch-quiz/users/${currentUser.uid}`), {
-      ...await getUserData(currentUser.uid),
+      ...currentData,
       ...updates,
-      lastUpdated: Date.now()
+      lastUpdated: serverTimestamp()
     });
     
+    console.log('✅ Profile updated successfully');
     return { success: true };
   } catch (error) {
-    console.error('Profile update error:', error);
+    console.error('❌ Profile update error:', error);
     return { success: false, error: error.message };
+  }
+}
+
+// Helper function to get user-friendly error messages
+function getErrorMessage(errorCode) {
+  switch (errorCode) {
+    case 'auth/email-already-in-use':
+      return 'This email is already registered. Please sign in instead.';
+    case 'auth/weak-password':
+      return 'Password should be at least 6 characters long.';
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    case 'auth/user-not-found':
+      return 'No account found with this email address.';
+    case 'auth/wrong-password':
+      return 'Incorrect password. Please try again.';
+    case 'auth/too-many-requests':
+      return 'Too many failed attempts. Please try again later.';
+    default:
+      return 'An error occurred. Please try again.';
   }
 }

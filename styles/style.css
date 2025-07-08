@@ -1,6 +1,6 @@
 @import url('./theme.css');
 
-/* style.css (Desktop-first styles) */
+/* Main styles for HatchChat */
 
 :root {
   --color-bg: #0e1117;
@@ -115,6 +115,8 @@ nav {
   font-weight: 500;
   text-align: left;
   transition: all var(--transition);
+  border: none;
+  cursor: pointer;
 }
 
 .nav-btn:hover {
@@ -228,6 +230,22 @@ nav {
   color: #fff;
 }
 
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.message-content {
+  line-height: 1.4;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -271,4 +289,98 @@ nav {
 #chat-box::-webkit-scrollbar-thumb {
   background: var(--color-primary);
   border-radius: 8px;
+}
+
+/* Announcement styles */
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.announcement-card {
+  background: var(--color-panel);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.announcement-card h3 {
+  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+}
+
+.announcement-card img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.announcement-form {
+  background: var(--color-panel);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-glow);
+}
+
+.announcement-form textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  border: none;
+  background: #1e293b;
+  color: var(--color-text);
+  resize: vertical;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  html, body {
+    overflow: auto;
+  }
+  
+  .app-container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  nav {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #334155;
+  }
+  
+  .nav-btn {
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  #chat-section {
+    flex-direction: column;
+    height: auto;
+    padding: 0.5rem;
+  }
+  
+  .sidebar {
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .chat-panel {
+    min-height: 60vh;
+  }
+  
+  .message {
+    max-width: 90%;
+  }
 }

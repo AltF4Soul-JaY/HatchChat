@@ -1,8 +1,11 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js';
-import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js';
+import { 
+  getDatabase, 
+  ref, 
+  get 
+} from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js';
 import { firebaseConfig } from './firebase-config.js';
 import { initAuth, getCurrentUser, updateUserProfile } from './auth.js';
-
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -12,8 +15,6 @@ let currentUser = null;
 const usernameInput = document.getElementById('usernameInput');
 const statusInput = document.getElementById('statusInput');
 const saveBtn = document.getElementById('saveProfileBtn');
-const storedUsername = document.getElementById('storedUsername');
-const storedStatus = document.getElementById('storedStatus');
 
 // Initialize authentication
 initAuth().then(user => {
@@ -24,28 +25,41 @@ initAuth().then(user => {
   
   currentUser = user;
   loadUserProfile();
+  console.log('✅ Profile page initialized');
 });
 
 async function loadUserProfile() {
   if (!currentUser) return;
   
-  const userRef = ref(db, `hatch-quiz/users/${currentUser.uid}`);
-  const snapshot = await get(userRef);
-  
-  if (snapshot.exists()) {
-    const data = snapshot.val();
-    usernameInput.value = data.username || '';
-    statusInput.value = data.status || '';
-    if (storedUsername) storedUsername.textContent = data.username || '—';
-    if (storedStatus) storedStatus.textContent = data.status || '—';
+  try {
+    const userRef = ref(db, `hatch-quiz/users/${currentUser.uid}`);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      usernameInput.value = data.username || '';
+      statusInput.value = data.status || '';
+    }
+  } catch (error) {
+    console.error('❌ Error loading profile:', error);
   }
 }
+
 saveBtn.addEventListener('click', async () => {
-  if (!currentUser) return alert('Please sign in first.');
+  if (!currentUser) {
+    alert('Please sign in first.');
+    return;
+  }
   
   const username = usernameInput.value.trim();
   const status = statusInput.value.trim();
-  if (!username) return alert('Enter a username.');
+  
+  if (!username) {
+    alert('Please enter a username.');
+    return;
+  }
+  
+  console.log('🔄 Updating profile...');
   
   const result = await updateUserProfile({
     username,
@@ -54,10 +68,10 @@ saveBtn.addEventListener('click', async () => {
   });
   
   if (result.success) {
-    alert('Profile saved!');
-    if (storedUsername) storedUsername.textContent = username;
-    if (storedStatus) storedStatus.textContent = status || '—';
+    alert('✅ Profile saved successfully!');
+    console.log('✅ Profile updated successfully');
   } else {
-    alert('Failed to save profile: ' + result.error);
+    alert('❌ Failed to save profile: ' + result.error);
+    console.error('❌ Profile update failed:', result.error);
   }
 });
