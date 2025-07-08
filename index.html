@@ -9,6 +9,16 @@
   <meta name="theme-color" content="#0f172a" />
   <link rel="stylesheet" href="styles/theme.css" />
   <link rel="stylesheet" href="styles/style.css" />
+  <script>
+    // Check authentication before loading the app
+    import('./scripts/auth.js').then(({ initAuth }) => {
+      initAuth().then(user => {
+        if (!user) {
+          window.location.href = '/auth.html';
+        }
+      });
+    });
+  </script>
 </head>
 <body>
   <!-- Header -->

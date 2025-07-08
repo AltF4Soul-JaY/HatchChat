@@ -1,5 +1,5 @@
 // firebase-config.js - Centralized Firebase configuration
-console.log("env key:", import.meta.env.VITE_FIREBASE_API_KEY);
+// console.log("env key:", import.meta.env.VITE_FIREBASE_API_KEY);
 
 export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
