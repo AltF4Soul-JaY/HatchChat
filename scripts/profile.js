@@ -2,6 +2,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.9.1/firebas
 import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js';
 
 const firebaseConfig = {
+console.log("env key:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,

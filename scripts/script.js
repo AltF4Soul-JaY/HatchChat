@@ -19,6 +19,8 @@ import {
 } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js';
 
 // ✅ Firebase Config
+console.log("env key:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+console.log("All env vars:", process.env);
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
