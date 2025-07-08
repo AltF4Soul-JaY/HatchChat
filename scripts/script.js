@@ -1,10 +1,3 @@
-// Register Service Worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(reg => console.log('✅ Service Worker registered:', reg.scope))
-    .catch(err => console.error('❌ Service Worker registration failed:', err));
-}
-
 // Firebase SDK Imports
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js';
 import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js';
