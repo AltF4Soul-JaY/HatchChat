@@ -139,7 +139,24 @@ async function updateUserPresence(user) {
       });
     }
   } catch (error) {
-    console.error('❌ Error updating user presence:', error);
+    if (error.code === 'PERMISSION_DENIED') {
+      console.error('❌ Permission denied: Firebase Database rules need to be updated.');
+      console.error('📋 Please update your Firebase Realtime Database rules to:');
+      console.error(`{
+  "rules": {
+    "hatch-quiz": {
+      "users": {
+        "$uid": {
+          ".read": "auth != null",
+          ".write": "auth != null && auth.uid === $uid"
+        }
+      }
+    }
+  }
+}`);
+    } else {
+      console.error('❌ Error updating user presence:', error);
+    }
   }
 }
 
