@@ -3,14 +3,14 @@ import { getDatabase, ref, push, onValue } from 'https://www.gstatic.com/firebas
 
 // Firebase config (same as main)
 const firebaseConfig = {
-  apiKey: "AIzaSyA-LkMwxEsKcz30XFiZNNp52kfOb8rJtkY",
-  authDomain: "idea-hatch-f30a2.firebaseapp.com",
-  databaseURL: "https://idea-hatch-f30a2-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "idea-hatch-f30a2",
-  storageBucket: "idea-hatch-f30a2.appspot.com",
-  messagingSenderId: "772329230400",
-  appId: "1:772329230400:web:1e633f72154d0c318b0fa5",
-  measurementId: "G-8BEDPTPJ76"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Init
